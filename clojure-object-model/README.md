@@ -1,24 +1,66 @@
 # clojure-object-model
 
-FIXME: description
+This project provides an object-oriented model in Clojure, inspired by CLOS (Common Lisp Object System), featuring support for classes, attributes, access control, multiple inheritance, dynamic dispatch, and method combination. 
+
+## Features
+
+- Custom class definition
+- Attribute (slot) management
+- Fine-grained access control (public, protected, private)
+- Multiple inheritance with C3 linearization
+- Dynamic method dispatch
+- Method combination (before, after, around methods)
 
 ## Installation
 
-Download from http://example.com/FIXME.
+To build and run the project, you'll need to have [Leiningen](https://leiningen.org/) installed.
+
+Clone the repository and use Leiningen for project management:
+
+```bash
+git clone https://github.com/ssaabbii/object-model.git
+cd clojure-object-model
+```
 
 ## Usage
 
-FIXME: explanation
+To build the project and generate the documentation, use the following commands:
 
-    $ java -jar clojure-object-model-0.1.0-standalone.jar [args]
+```bash
+# Compile the project
+lein uberjar
 
+# Run tests
+lein test
+
+# Run example usage
+lein run -m clojure-object-model.example-usage
+
+# Generate documentation
+lein codox
+```
+
+## Documentation
+
+Generated HTML documentation will be available in `target/doc/index.html`
 ## Options
 
 FIXME: listing of options this app accepts.
 
 ## Examples
 
-...
+A comprehensive example of library usage can be found in `example_usage.clj`. 
+
+## Requirements Compliance
+
+| Requirement | Status | Comment |
+|------------|--------|---------|
+| Class Definition | ✅ | defclass macro supports class creation |
+| Attributes/Slots | ✅ | Slots defined with :slots, access control via :access |
+| Access Control | ✅ | Implemented :public, :protected, :private |
+| Multiple Inheritance | ✅ | Uses C3 linearization algorithm |
+| Dynamic Dispatch | ✅ | Implemented via call-method |
+| Method Combination | ✅ | Supports before, after, around methods
 
 ### Bugs
 
