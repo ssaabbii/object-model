@@ -55,7 +55,10 @@ lein codox
 ## 📚 Документация
 
 ### Автоматическая документация
-- Расположение: `clojure-object-model/target/doc/index.html`
+
+- **Локальное расположение:** `clojure-object-model/target/doc/index.html`  
+- **GitHub Pages:** [Документация](https://ssaabbii.github.io/object-model/clojure-object-model/target/doc/index.html)  
+
 
 ### План разработки
 - Документация 1-го этапа: `doc/plan/README.md`
