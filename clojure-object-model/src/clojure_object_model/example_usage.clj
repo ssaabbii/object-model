@@ -38,6 +38,97 @@
 (defmethod call-method [Dog :describe] [_ instance]
   (str "A " (get-slot Dog instance :breed) " dog named " (get-slot Dog instance :name)))
 
+
+
+;; ============================
+;; Ромбовидная линеаризация
+;; ============================
+
+;; Базовый класс A
+(defclass A
+  :slots {:base-value 0}
+  :access {:base-value :public})
+
+;; Класс B, наследуется от A
+(defclass B
+  :inherits [A]
+  :slots {:b-value 10}
+  :access {:b-value :public})
+
+;; Класс C, также наследуется от A
+(defclass C
+  :inherits [A]
+  :slots {:c-value 20}
+  :access {:c-value :public})
+
+;; Класс D с множественным наследованием от B и C
+(defclass D
+  :inherits [B C]
+  :slots {:d-value 30}
+  :access {:d-value :public})
+
+;; Методы для демонстрации цепочки вызовов
+
+;; Метод в классе A
+(defmethod call-method [A :process] [method instance & args]
+  (println "Метод process в классе A")
+  (get-slot A instance :base-value))
+
+;; Метод в классе B
+(defmethod call-method [B :process] [method instance & args]
+  (println "Метод process в классе B")
+  (let [base-result (call-method :process (assoc instance :class A))]
+    (+ base-result (get-slot B instance :b-value))))
+
+;; Метод в классе C
+(defmethod call-method [C :process] [method instance & args]
+  (println "Метод process в классе C")
+  (let [base-result (call-method :process (assoc instance :class A))]
+    (+ base-result (get-slot C instance :c-value))))
+
+;; Метод в классе D
+(defmethod call-method [D :process] [method instance & args]
+  (println "Метод process в классе D")
+  (let [b-result (call-method :process (assoc instance :class B))
+        c-result (call-method :process (assoc instance :class C))]
+    (+ b-result c-result (get-slot D instance :d-value))))
+
+;; Создаем экземпляр класса D
+(def my-d-instance
+  {:class D
+   :slots {:base-value 1
+           :b-value 11
+           :c-value 21
+           :d-value 31}})
+
+(defn demonstrate-diamond-linearization []
+  (println "\n=== Линеаризация классов ===")
+  (println "Линеаризация A:" (linearize A))
+  (println "Линеаризация B:" (linearize B))
+  (println "Линеаризация C:" (linearize C))
+  (println "Линеаризация D:" (linearize D))
+
+  (println "\n=== Цепочка вызовов методов ===")
+  (let [base-value (get-slot A my-d-instance :base-value)
+        b-value (get-slot B my-d-instance :b-value)
+        c-value (get-slot C my-d-instance :c-value)
+        d-value (get-slot D my-d-instance :d-value)]
+    (println "Промежуточные значения:")
+    (println "  base-value (A):" base-value)
+    (println "  b-value (B):   " b-value)
+    (println "  c-value (C):   " c-value)
+    (println "  d-value (D):   " d-value)
+
+    (let [result (call-method :process my-d-instance)]
+      (println "\nФинальный результат:" result)
+      (println "Проверка вычисления: "
+               base-value " + "
+               b-value " + "
+               c-value " + "
+               d-value " = "
+               result))))
+
+
 ;; ============================
 ;; Основной пример использования
 ;; ============================
@@ -67,4 +158,7 @@
   ;; Обновление публичного слота name
   (println "Updating dog's name...")
   (let [updated-dog (set-slot Dog my-dog :name "Buddy")] ;; Обновляем имя
-    (println "Updated Dog name:" (get-slot Dog updated-dog :name)))) ;; Ожидается: "Buddy"
+    (println "Updated Dog name:" (get-slot Dog updated-dog :name))) ;; Ожидается: "Buddy"
+
+  ;; Демонстрация ромбовидной линеаризации
+  (demonstrate-diamond-linearization))
